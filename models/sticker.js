@@ -5,6 +5,12 @@ var schema = new Schema({
   date: {
     type: Date
   },
+  subject: {
+    type: String
+  },
+  message: {
+    type: String
+  },
   createdAt: {
     type: Date,
     default: Date.now

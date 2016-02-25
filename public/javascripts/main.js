@@ -1,10 +1,72 @@
 angular.module('ui.bootstrap.demo', ['ngAnimate', 'ui.bootstrap']);
 
-angular.module('ui.bootstrap.demo').controller('DatepickerDemoCtrl', function ($scope) {
+angular.module('ui.bootstrap.demo').controller('DatepickerDemoCtrl', function ($scope, $http, $location) {
+  $scope.$watch("dt", function() {
+    $location.path = $location + $scope.dt.getTime();
+    /*$scope.allFormData = [];
+    $scope.submit = function() {
+      if ($scope.text) {
+        $scope.list.push(this.text);
+        $scope.text = '';
+      }
+    };
+
+    var data = JSON.stringify({
+      data: $scope.dt
+    });
+
+    var config = '';
+
+    $http.post('/', data, config).then(function() {
+      console.log('post request success');
+    }, function() {
+      console.log('post request failed');
+    });*/
+  });
+
   $scope.today = function() {
     $scope.dt = new Date();
   };
   $scope.today();
+
+  $scope.getMessages = function() {
+    var monthNames = ["January", "February", "March", "April", "May", "June",
+      "July", "August", "September", "October", "November", "December"
+    ];
+    $scope.headerFormatdt = monthNames[$scope.dt.getMonth()] + ' ' + $scope.dt.getDate() + ', ' + $scope.dt.getFullYear();
+
+    console.log($scope.dt.getTime(), 'here');
+
+    $http({
+      url: '/test',
+      method: "GET",
+      params: { date: (new Date()).getTime() }
+    }).then(function(docs) {
+      console.log($scope.dt);
+      console.log('get request success');
+    }, function() {
+      console.log($scope.dt);
+      console.error('*Create* GET request failed');
+    });
+  }();
+
+  $scope.createNewMessage = function() {
+    var a = {
+      date: $scope.data,
+      subject: $scope.subject,
+      message: $scope.message
+    };
+
+    var formSubmit = JSON.stringify(a);
+
+    $http.post('/', formSubmit, '').then(function() {
+      console.log(formSubmit);
+      console.log('post request success');
+    }, function() {
+      console.log(formSubmit);
+      console.error('*Create new post* POST request failed');
+    });
+  };
 
   $scope.clear = function() {
     $scope.dt = null;
@@ -31,7 +93,7 @@ angular.module('ui.bootstrap.demo').controller('DatepickerDemoCtrl', function ($
   };
 
   $scope.setDate = function(year, month, day) {
-    $scope.dt = new Date(year, month, day);
+    $scope.dt = new Date(year, month, day);;
   };
 
   $scope.dateOptions = {
