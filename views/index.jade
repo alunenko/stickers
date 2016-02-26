@@ -5,30 +5,49 @@ block content
   //- p Welcome to #{title}
 
   div(ng-controller="DatepickerDemoCtrl")
-    .row
-      .col-md-6
-        .col-md-12
-          h4.page-header Username's messages
-          div(style="display:inline-block; min-height:290px;")
-            //- days were have notes: bootstrap BADGES
-            uib-datepicker.well.well-sm(
-            ng-model="dt"
-            min-date="minDate"
-            show-weeks="true" custom-class="getDayClass(date, mode)"
-          )
-        .col-md-12
-          h4.page-header Add new message
-          form(style="text-align:right;" ng-submit="createNewMessage()" novalidate)
-            .form-group
-              input.form-control(type="text" placeholder="date" ng-model="data")
-            .form-group
-              input.form-control(type="text" placeholder="Subject" ng-model="subject")
-            textarea.form-control(rows="3" placeholder="Message" ng-model="message")
-            button.btn.btn-default(type="submit" style="margin-top: 10px;") Submit
-      .col-md-6
-        h4.page-header(style="text-align:center") {{ headerFormatdt }}
-        .panel.panel-default
-          .panel-body
-            p.header NOTE HEADER
-            p.body note body note body note body note body note body note body
+    .col-md-6
+      .col-md-12(style="padding: 0")
+        h4.page-header Username's messages
+        div(style="display:inline-block; min-height:290px;")
+          //- days were have notes: bootstrap BADGES
+          uib-datepicker.well.well-sm(
+          ng-model="dt"
+          show-weeks="true" custom-class="getDayClass(date, mode)"
+        )
+      .col-md-12(style="padding: 0")
+        h4.page-header Add new message
+        form(style="text-align:right;" ng-submit="createNewMessage()" novalidate)
+          .input-group(style="margin-bottom: 15px")
+            input.form-control(
+              type="text"
+              uib-datepicker-popup
+              ng-model="data"
+              is-open="popup2.opened"
+              datepicker-options="dateOptions"
+              ng-required="true"
+              close-text="Close"
+              placeholder="date"
+            )
+            span.input-group-btn
+              button.btn.btn-default(type="button" ng-click="open2()")
+                i.glyphicon.glyphicon-calendar
+          .form-group
+            input.form-control(type="text" placeholder="Subject" ng-model="subject")
+          textarea.form-control(rows="3" placeholder="Message" ng-model="message")
+          button.btn.btn-default(type="submit" style="margin-top: 10px;") Submit
+    .col-md-6
+      h4.page-header(style="text-align:center") {{ headerFormatdt }}
+      .panel.panel-default(ng-repeat="note in notes.notes" ng-show="notes.notes.length")
+        .panel-body
+          p.header {{ note.subject }}
+          p.body {{ note.message }}
+      .panel.panel-default(ng-show="!notes.notes.length" style="display: table; width: 100%;")
+        p(style="vertical-align: middle; height: 100px; display: table-cell; text-align: center; width: 100%;") There is no notes on this day
+
+      .panel.panel-default
+        p frontend
+        pre {{ notes }}
+      .panel.panel-default
+        p bakend
         pre #{dates}
+        pre #{ttt}

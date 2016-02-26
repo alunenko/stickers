@@ -1,33 +1,52 @@
 angular.module('ui.bootstrap.demo', ['ngAnimate', 'ui.bootstrap']);
 
-angular.module('ui.bootstrap.demo').controller('DatepickerDemoCtrl', function ($scope, $http, $location) {
-  $scope.$watch("dt", function() {
-    $location.path = $location + $scope.dt.getTime();
-    /*$scope.allFormData = [];
-    $scope.submit = function() {
-      if ($scope.text) {
-        $scope.list.push(this.text);
-        $scope.text = '';
-      }
-    };
-
-    var data = JSON.stringify({
-      data: $scope.dt
-    });
-
-    var config = '';
-
-    $http.post('/', data, config).then(function() {
-      console.log('post request success');
-    }, function() {
-      console.log('post request failed');
-    });*/
-  });
+angular.module('ui.bootstrap.demo').controller('DatepickerDemoCtrl', function ($scope, $http, $location, socketio) {
+  $scope.notes = [];
+  $scope.monthPostCounter = {};
 
   $scope.today = function() {
     $scope.dt = new Date();
+  }();
+
+  $scope.getNotes = function(date) {
+    $http({
+      url: '/test',
+      method: "GET",
+      params: { date: (date).getTime() }
+    }).then(function(response) {
+      console.info(response, 'get request success');
+      console.info(response.data, 'response.data');
+      $scope.notes = response.data.notes;
+      $scope.monthPostCounter = response.data.totalPostCount;
+    }, function() {
+      console.log(date, '*Create* GET request failed');
+      console.error('*Create* GET request failed');
+    });
   };
-  $scope.today();
+
+  $scope.defaultLoad = function (date) {
+    $http({
+      url: '/',
+      method: "GET",
+      params: { date: (date).getTime() }
+    }).then(function(response) {
+      console.log(response.data, 'GET/ request success');
+      console.log('GET/ request success');
+      $scope.notes = response.notes;
+    }, function() {
+      console.error('*Create* GET/ request failed');
+    });
+  }(new Date());
+
+  $scope.$watch("dt", function() {
+    console.log($scope.dt, 'watch');
+    var monthNames = ["January", "February", "March", "April", "May", "June",
+      "July", "August", "September", "October", "November", "December"
+    ];
+    $scope.headerFormatdt = monthNames[$scope.dt.getMonth()] + ' ' + $scope.dt.getDate() + ', ' + $scope.dt.getFullYear();
+    console.log('call notes from watch');
+    $scope.getNotes($scope.dt);
+  });
 
   $scope.getMessages = function() {
     var monthNames = ["January", "February", "March", "April", "May", "June",
@@ -35,19 +54,8 @@ angular.module('ui.bootstrap.demo').controller('DatepickerDemoCtrl', function ($
     ];
     $scope.headerFormatdt = monthNames[$scope.dt.getMonth()] + ' ' + $scope.dt.getDate() + ', ' + $scope.dt.getFullYear();
 
-    console.log($scope.dt.getTime(), 'here');
-
-    $http({
-      url: '/test',
-      method: "GET",
-      params: { date: (new Date()).getTime() }
-    }).then(function(docs) {
-      console.log($scope.dt);
-      console.log('get request success');
-    }, function() {
-      console.log($scope.dt);
-      console.error('*Create* GET request failed');
-    });
+    console.log('call notes from getNotes');
+    $scope.getNotes($scope.dt);
   }();
 
   $scope.createNewMessage = function() {
@@ -60,13 +68,17 @@ angular.module('ui.bootstrap.demo').controller('DatepickerDemoCtrl', function ($
     var formSubmit = JSON.stringify(a);
 
     $http.post('/', formSubmit, '').then(function() {
-      console.log(formSubmit);
-      console.log('post request success');
+      console.info(formSubmit, 'post request success');
+      $scope.getNotes($scope.dt);
     }, function() {
-      console.log(formSubmit);
+      console.info(formSubmit, '*Create new post* POST request failed');
       console.error('*Create new post* POST request failed');
     });
   };
+
+  socketio.on('newNote', function (msg) {
+    console.log(msg, 'main.js');
+  });
 
   $scope.clear = function() {
     $scope.dt = null;
@@ -143,5 +155,29 @@ angular.module('ui.bootstrap.demo').controller('DatepickerDemoCtrl', function ($
     }
 
     return '';
+  };
+});
+
+angular.module('ui.bootstrap.demo').factory('socketio', function ($rootScope) {
+  var socket = io.connect();
+  return {
+    on: function (eventName, callback) {
+      socket.on(eventName, function () {
+        var args = arguments;
+        $rootScope.$apply(function () {
+          callback.apply(socket, args);
+        });
+      });
+    },
+    emit: function (eventName, data, callback) {
+      socket.emit(eventName, data, function () {
+        var args = arguments;
+        $rootScope.$apply(function () {
+          if (callback) {
+            callback.apply(socket, args);
+          }
+        });
+      })
+    }
   };
 });
