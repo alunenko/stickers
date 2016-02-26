@@ -1,7 +1,10 @@
-a {
-  color: #00B7FF;
-}
+@import "colors.less";
+@import "general.less";
+@import "note.less";
+@import "create-new-note.less";
+@import "custom-datepicker.less";
 
+// deprecated - remove this SH***
 .full button span {
   background-color: limegreen;
   border-radius: 32px;
@@ -12,18 +15,12 @@ a {
   border-radius: 32px;
   color: black;
 }
-
-.uib-day {
-  button {
-    position: relative;
-  }
-}
-.postCounter {
+.postCounter span {
   &:before {
     position: absolute;
     right: 0;
     top: 0;
-    background-color: red;
+    background-color: @badge-bg;
     border-radius: 9px;
     height: 12px;
     width: 12px;

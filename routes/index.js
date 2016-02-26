@@ -23,10 +23,13 @@ module.exports = function(io) {
           "$lt":  new Date(date.getFullYear(), date.getMonth() + 1, 0)
         }
       }
-      , function(err, resPostsInMonth) {
+      , function(err, resPostsInMonth, next) {
         if(err) throw err;
       }
     ).exec();
+
+    // them(result => () {
+    // }, err => next(err));
 
     zzz.then(function(resPostsInMonth) {
 
@@ -39,7 +42,7 @@ module.exports = function(io) {
         totalPostCount[+resPostsInMonth[i].date.getDate()] = totalPostCount[+resPostsInMonth[i].date.getDate()]+1;
       }
 
-      console.log(totalPostCount, 'totalPostCount');
+      console.log(totalPostCount, 'totalPostCount /test');
 
       Sticker.find(
         {
@@ -63,6 +66,35 @@ module.exports = function(io) {
 
 
 
+  router.get('/badges', function(req, res, next) {
+    var date = new Date(+req.query.date);
+
+    Sticker.find(
+      {
+        "date": {
+          "$gte": new Date(date.getFullYear(), date.getMonth(), 1),
+          "$lt":  new Date(date.getFullYear(), date.getMonth() + 1, 0)
+        }
+      }
+      , function(err, notes) {
+        var totalPostCount = {};
+
+        for (var i = 0; i < notes.length; i++) {
+          if(totalPostCount[+notes[i].date.getDate()] == undefined) {
+            totalPostCount[+notes[i].date.getDate()] = 1;
+            continue;
+          }
+
+          totalPostCount[+notes[i].date.getDate()] = totalPostCount[+notes[i].date.getDate()]+1;
+        }
+
+        console.log(totalPostCount, 'totalPostCount /badges');
+
+        res.json(totalPostCount);
+      }
+    );
+  });
+
 
 
   router.get('/', function(req, res, next) {
@@ -85,6 +117,7 @@ module.exports = function(io) {
 
     zzz.then(function(resPostsInMonth) {
 
+      // mongoose count. es6 map
       for (var i = 0; i < resPostsInMonth.length; i++) {
         if(totalPostCount[+resPostsInMonth[i].date.getDate()] == undefined) {
           totalPostCount[+resPostsInMonth[i].date.getDate()] = 1;

@@ -1,6 +1,6 @@
 angular.module('ui.bootstrap.demo', ['ngAnimate', 'ui.bootstrap']);
 
-angular.module('ui.bootstrap.demo').controller('DatepickerDemoCtrl', function ($scope, $http, $location, socketio) {
+angular.module('ui.bootstrap.demo').controller('DatepickerDemoCtrl', function ($scope, $http, $location, socketio, $rootScope) {
   $scope.notes = [];
   $scope.monthPostCounter = {};
 
@@ -8,7 +8,21 @@ angular.module('ui.bootstrap.demo').controller('DatepickerDemoCtrl', function ($
     $scope.dt = new Date();
   }();
 
-  $scope.getNotes = function(date) {
+  $rootScope.totalPostCount;
+
+/*  $scope.getBages = function() {
+    $http({
+      url: '/bages',
+      method: "GET",
+      params: { date: (date).getTime() }
+    }).then(function(response) {
+      console.log(response, 'bages');
+    }, function() {
+      console.error('*bages* GET request failed');
+    });
+  };*/
+
+  $scope.getNotes = function(date, mode) {
     $http({
       url: '/test',
       method: "GET",
@@ -17,12 +31,26 @@ angular.module('ui.bootstrap.demo').controller('DatepickerDemoCtrl', function ($
       console.info(response, 'get request success');
       console.info(response.data, 'response.data');
       $scope.notes = response.data.notes;
-      $scope.monthPostCounter = response.data.totalPostCount;
+      $rootScope.totalPostCount = response.data.totalPostCount;
+
+      $scope.events = [];
+      $scope.events = Object.keys($rootScope.totalPostCount).map(function(key) {
+        return {
+          date: new Date($scope.dt.getFullYear(), $scope.dt.getMonth(), key),
+          value: $rootScope.totalPostCount[key],
+          status: 'postCounter'
+        };
+      });
     }, function() {
       console.log(date, '*Create* GET request failed');
       console.error('*Create* GET request failed');
     });
   };
+
+  angular.element(document).ready(function () {
+    console.log('Page load');
+    $scope.getNotes($scope.dt);
+  });
 
   $scope.defaultLoad = function (date) {
     $http({
@@ -38,6 +66,8 @@ angular.module('ui.bootstrap.demo').controller('DatepickerDemoCtrl', function ($
     });
   }(new Date());
 
+  $scope.events = [];
+
   $scope.$watch("dt", function() {
     console.log($scope.dt, 'watch');
     var monthNames = ["January", "February", "March", "April", "May", "June",
@@ -46,6 +76,7 @@ angular.module('ui.bootstrap.demo').controller('DatepickerDemoCtrl', function ($
     $scope.headerFormatdt = monthNames[$scope.dt.getMonth()] + ' ' + $scope.dt.getDate() + ', ' + $scope.dt.getFullYear();
     console.log('call notes from watch');
     $scope.getNotes($scope.dt);
+
   });
 
   $scope.getMessages = function() {
@@ -53,19 +84,16 @@ angular.module('ui.bootstrap.demo').controller('DatepickerDemoCtrl', function ($
       "July", "August", "September", "October", "November", "December"
     ];
     $scope.headerFormatdt = monthNames[$scope.dt.getMonth()] + ' ' + $scope.dt.getDate() + ', ' + $scope.dt.getFullYear();
-
-    console.log('call notes from getNotes');
-    $scope.getNotes($scope.dt);
   }();
 
   $scope.createNewMessage = function() {
-    var a = {
+    var message = {
       date: $scope.data,
       subject: $scope.subject,
       message: $scope.message
     };
 
-    var formSubmit = JSON.stringify(a);
+    var formSubmit = JSON.stringify(message);
 
     $http.post('/', formSubmit, '').then(function() {
       console.info(formSubmit, 'post request success');
@@ -105,7 +133,7 @@ angular.module('ui.bootstrap.demo').controller('DatepickerDemoCtrl', function ($
   };
 
   $scope.setDate = function(year, month, day) {
-    $scope.dt = new Date(year, month, day);;
+    $scope.dt = new Date(year, month, day);
   };
 
   $scope.dateOptions = {
@@ -125,7 +153,7 @@ angular.module('ui.bootstrap.demo').controller('DatepickerDemoCtrl', function ($
     opened: false
   };
 
-  var tomorrow = new Date();
+/*  var tomorrow = new Date();
   tomorrow.setDate(tomorrow.getDate() + 1);
   var afterTomorrow = new Date();
   afterTomorrow.setDate(tomorrow.getDate() + 1);
@@ -139,9 +167,10 @@ angular.module('ui.bootstrap.demo').controller('DatepickerDemoCtrl', function ($
         date: afterTomorrow,
         status: 'partially'
       }
-    ];
+    ];*/
 
   $scope.getDayClass = function(date, mode) {
+
     if (mode === 'day') {
       var dayToCheck = new Date(date).setHours(0,0,0,0);
 
