@@ -1,7 +1,7 @@
 var User = require('./models/user').User;
 
 var user = new User({
-  username: 'Тестер2',
+  username: 'Тестер4',
   password: 'secret'
 });
 

@@ -8,7 +8,7 @@ module.exports = function(io) {
   var router = app.Router();
 
   io.on('newNote', function(socket) {
-    console.log('module exports newNote');
+    console.info('module exports newNote');
   });
 
   /* GET home page. */
@@ -28,9 +28,6 @@ module.exports = function(io) {
       }
     ).exec();
 
-    // them(result => () {
-    // }, err => next(err));
-
     zzz.then(function(resPostsInMonth) {
 
       for (var i = 0; i < resPostsInMonth.length; i++) {
@@ -41,8 +38,6 @@ module.exports = function(io) {
 
         totalPostCount[+resPostsInMonth[i].date.getDate()] = totalPostCount[+resPostsInMonth[i].date.getDate()]+1;
       }
-
-      console.log(totalPostCount, 'totalPostCount /test');
 
       Sticker.find(
         {
@@ -88,8 +83,6 @@ module.exports = function(io) {
           totalPostCount[+notes[i].date.getDate()] = totalPostCount[+notes[i].date.getDate()]+1;
         }
 
-        console.log(totalPostCount, 'totalPostCount /badges');
-
         res.json(totalPostCount);
       }
     );
@@ -126,8 +119,6 @@ module.exports = function(io) {
 
         totalPostCount[+resPostsInMonth[i].date.getDate()] = totalPostCount[+resPostsInMonth[i].date.getDate()]+1;
       }
-
-      console.log(totalPostCount, 'totalPostCount');
 
       Sticker.find(
         {

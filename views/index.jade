@@ -6,7 +6,6 @@ block content
       .col-md-12.select-notes-date
         h4.page-header Username's messages
         .uib-datepicker-wrapper
-          //- days were have notes: bootstrap BADGES
           uib-datepicker.well.well-sm(
           ng-model="dt"
           show-weeks="true"
@@ -31,7 +30,11 @@ block content
               button.btn.btn-default(type="button" ng-click="open2()")
                 i.glyphicon.glyphicon-calendar
           .form-group
-            input.form-control(type="text" placeholder="Subject" ng-model="subject")
+            input.form-control(
+              type="text"
+              placeholder="Subject"
+              ng-model="subject"
+            )
           textarea.form-control(rows="3" placeholder="Message" ng-model="message")
           button.btn.btn-default(type="submit") Submit
     .col-md-6
@@ -42,11 +45,3 @@ block content
           p.body {{ note.message }}
       .panel.panel-default(ng-show="!notes.length")
         p There is no notes on this day
-
-      //- .panel.panel-default
-      //-   p frontend
-      //-   pre {{ notes }}
-      //- .panel.panel-default
-      //-   p bakend
-      //-   pre #{dates}
-      //-   pre #{ttt}

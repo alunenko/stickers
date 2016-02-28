@@ -10,26 +10,13 @@ angular.module('ui.bootstrap.demo').controller('DatepickerDemoCtrl', function ($
 
   $rootScope.totalPostCount;
 
-/*  $scope.getBages = function() {
-    $http({
-      url: '/bages',
-      method: "GET",
-      params: { date: (date).getTime() }
-    }).then(function(response) {
-      console.log(response, 'bages');
-    }, function() {
-      console.error('*bages* GET request failed');
-    });
-  };*/
-
   $scope.getNotes = function(date, mode) {
     $http({
       url: '/test',
       method: "GET",
       params: { date: (date).getTime() }
     }).then(function(response) {
-      console.info(response, 'get request success');
-      console.info(response.data, 'response.data');
+      console.info('GET/test request success');
       $scope.notes = response.data.notes;
       $rootScope.totalPostCount = response.data.totalPostCount;
 
@@ -42,13 +29,12 @@ angular.module('ui.bootstrap.demo').controller('DatepickerDemoCtrl', function ($
         };
       });
     }, function() {
-      console.log(date, '*Create* GET request failed');
       console.error('*Create* GET request failed');
     });
   };
 
   angular.element(document).ready(function () {
-    console.log('Page load');
+    console.info('Page load');
     $scope.getNotes($scope.dt);
   });
 
@@ -58,7 +44,6 @@ angular.module('ui.bootstrap.demo').controller('DatepickerDemoCtrl', function ($
       method: "GET",
       params: { date: (date).getTime() }
     }).then(function(response) {
-      console.log(response.data, 'GET/ request success');
       console.log('GET/ request success');
       $scope.notes = response.notes;
     }, function() {
@@ -69,14 +54,11 @@ angular.module('ui.bootstrap.demo').controller('DatepickerDemoCtrl', function ($
   $scope.events = [];
 
   $scope.$watch("dt", function() {
-    console.log($scope.dt, 'watch');
     var monthNames = ["January", "February", "March", "April", "May", "June",
       "July", "August", "September", "October", "November", "December"
     ];
     $scope.headerFormatdt = monthNames[$scope.dt.getMonth()] + ' ' + $scope.dt.getDate() + ', ' + $scope.dt.getFullYear();
-    console.log('call notes from watch');
     $scope.getNotes($scope.dt);
-
   });
 
   $scope.getMessages = function() {
@@ -96,16 +78,15 @@ angular.module('ui.bootstrap.demo').controller('DatepickerDemoCtrl', function ($
     var formSubmit = JSON.stringify(message);
 
     $http.post('/', formSubmit, '').then(function() {
-      console.info(formSubmit, 'post request success');
+      console.info('POST/ request success');
       $scope.getNotes($scope.dt);
     }, function() {
-      console.info(formSubmit, '*Create new post* POST request failed');
       console.error('*Create new post* POST request failed');
     });
   };
 
   socketio.on('newNote', function (msg) {
-    console.log(msg, 'main.js');
+    console.info('newNote was created');
   });
 
   $scope.clear = function() {
@@ -152,22 +133,6 @@ angular.module('ui.bootstrap.demo').controller('DatepickerDemoCtrl', function ($
   $scope.popup2 = {
     opened: false
   };
-
-/*  var tomorrow = new Date();
-  tomorrow.setDate(tomorrow.getDate() + 1);
-  var afterTomorrow = new Date();
-  afterTomorrow.setDate(tomorrow.getDate() + 1);
-  $scope.events =
-    [
-      {
-        date: tomorrow,
-        status: 'full'
-      },
-      {
-        date: afterTomorrow,
-        status: 'partially'
-      }
-    ];*/
 
   $scope.getDayClass = function(date, mode) {
 

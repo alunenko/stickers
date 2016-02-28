@@ -25,7 +25,7 @@
                     ng-disabled="::dt.disabled"
                     tabindex="-1">
                 <span ng-class="::{'text-muted': dt.secondary, 'text-info': dt.current}">{{::dt.label}}</span>
-                <span>{{ $root.totalPostCount[dt.date.getDate()] }}</span>
+                <span class="badge" ng-show="$root.totalPostCount[dt.date.getDate()]">{{ $root.totalPostCount[dt.date.getDate()] }}</span>
             </button>
         </td>
     </tr>
