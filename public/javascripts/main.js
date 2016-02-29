@@ -44,7 +44,7 @@ angular.module('ui.bootstrap.demo').controller('DatepickerDemoCtrl', function ($
       method: "GET",
       params: { date: (date).getTime() }
     }).then(function(response) {
-      console.log('GET/ request success');
+      console.info('GET/ request success');
       $scope.notes = response.notes;
     }, function() {
       console.error('*Create* GET/ request failed');

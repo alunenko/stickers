@@ -14,10 +14,17 @@ block content
         )
       .col-md-12.create-new-note
         h4.page-header Add new message
-        form(ng-submit="createNewMessage()" novalidate)
-          .input-group
+        form(
+          name="form"
+          ng-submit="createNewMessage()"
+          novalidate
+        )
+          .input-group.has-feedback(
+            ng-class="((form.$submitted || form.date.$touched) && form.date.$error.required) ? 'has-error' : ''"
+          )
             input.form-control(
               type="text"
+              name="date"
               uib-datepicker-popup
               ng-model="data"
               is-open="popup2.opened"
@@ -26,17 +33,42 @@ block content
               close-text="Close"
               placeholder="YYYY-MM-DD"
             )
-            span.input-group-btn
-              button.btn.btn-default(type="button" ng-click="open2()")
-                i.glyphicon.glyphicon-calendar
-          .form-group
+            span.input-group-addon(ng-click="open2()")
+              i.glyphicon.glyphicon-calendar
+          div(ng-show="form.$submitted || form.date.$touched")
+            .has-error(ng-show="form.date.$error.required")
+              span.help-block Data is required.
+          .form-group.has-feedback(
+            ng-class="((form.$submitted || form.subject.$touched) && form.subject.$error.required) ? 'has-error' : ''"
+          )
             input.form-control(
               type="text"
+              name="subject"
               placeholder="Subject"
               ng-model="subject"
+              ng-required="true"
             )
-          textarea.form-control(rows="3" placeholder="Message" ng-model="message")
-          button.btn.btn-default(type="submit") Submit
+            div(ng-show="form.$submitted || form.subject.$touched")
+              .has-error(ng-show="form.subject.$error.required")
+                span.help-block Subject is required.
+                span.glyphicon.glyphicon-remove.form-control-feedback(aria-hidden="true")
+                span.sr-only(error)
+          .form-group.form-group-message.has-feedback(
+            ng-class="((form.$submitted || form.message.$touched) && form.message.$error.required) ? 'has-error' : ''"
+          )
+            textarea.form-control(
+              name="message"
+              rows="3"
+              placeholder="Message"
+              ng-model="message"
+              ng-required="true"
+            )
+            div(ng-show="form.$submitted || form.message.$touched")
+              .has-error(ng-show="form.message.$error.required")
+                span.help-block Message is required.
+                span.glyphicon.glyphicon-remove.form-control-feedback(aria-hidden="true")
+                span.sr-only(error)
+          input.btn.btn-default(type="submit" value="Submit")
     .col-md-6
       h4.page-header {{ headerFormatdt }}
       .panel.panel-default(ng-repeat="note in notes" ng-show="notes.length")

@@ -3,11 +3,11 @@ var router = express.Router();
 var User = require('../models/user').User;
 
 /* GET users listing. */
-router.get('/', function(req, res, next) {
-  User.find({}, function(err, users) {
+router.get('/:id', function(req, res, next) {
+  User.findById(req.params.id, function(err, user) {
     if (err) return next(err);
 
-    res.json(users);
+    res.json(user);
   });
 });
 

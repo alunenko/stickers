@@ -3,13 +3,16 @@ var mongoose = require('../libs/mongoose')
 
 var schema = new Schema({
   date: {
-    type: Date
+    type: Date,
+    required: true
   },
   subject: {
-    type: String
+    type: String,
+    required: true
   },
   message: {
-    type: String
+    type: String,
+    required: true
   },
   createdAt: {
     type: Date,
