@@ -16,7 +16,7 @@ module.exports = function(io) {
     var date = new Date(+req.query.date);
 
     var totalPostCount = {};
-    var zzz = Sticker.find(
+    var monthNotesCounter = Sticker.find(
       {
         "date": {
           "$gte": new Date(date.getFullYear(), date.getMonth(), 1),
@@ -28,7 +28,7 @@ module.exports = function(io) {
       }
     ).exec();
 
-    zzz.then(function(resPostsInMonth) {
+    monthNotesCounter.then(function(resPostsInMonth) {
 
       for (var i = 0; i < resPostsInMonth.length; i++) {
         if(totalPostCount[+resPostsInMonth[i].date.getDate()] == undefined) {
@@ -96,7 +96,7 @@ module.exports = function(io) {
     var date = new Date(+req.query.date);
 
     var totalPostCount = {};
-    var zzz = Sticker.find(
+    var monthNotesCounter = Sticker.find(
       {
         "date": {
           "$gte": new Date(date.getFullYear(), date.getMonth(), 1),
@@ -108,7 +108,7 @@ module.exports = function(io) {
       }
     ).exec();
 
-    zzz.then(function(resPostsInMonth) {
+    monthNotesCounter.then(function(resPostsInMonth) {
 
       // mongoose count. es6 map
       for (var i = 0; i < resPostsInMonth.length; i++) {
