@@ -149,7 +149,7 @@ module.exports = function(io) {
     });
 
     sticker.save(function(err, sticker, affected) {
-      if (err) throw err;
+      if (err) return next(err);
     });
 
     res.render('index', {
